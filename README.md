@@ -2,13 +2,11 @@
 
 Redis GEO is a simple example showing how to make use of [Redis 3.2.0 new GEO capabilities](http://antirez.com/news/104):
 
-[![](https://raw.githubusercontent.com/ServiceStack/Assets/master/img/livedemos/redis-geo/redisgeo-screenshot.png)](http://redisgeo.netcore.io)
-
-> Live Demo: http://redisgeo.netcore.io
+![](https://raw.githubusercontent.com/ServiceStack/Assets/master/img/livedemos/redis-geo/redisgeo-screenshot.png)
 
 If Redis hasn't already cemented itself as the venerable Swiss-Army-Knife component present in 
-[many high-performance server solutions](http://techstacks.io/tech/redis), the latest 3.2.0 release has made 
-it even more versatile and enhanced it with new [GEO powers](http://redis.io/commands/geoadd).
+[many high-performance server solutions](https://techstacks.io/tech/redis), the latest 3.2.0 release has made 
+it even more versatile and enhanced it with new [GEO powers](https://redis.io/commands/geoadd).
 
 Aiming for the simplest possible useful demonstration of this new functionality, Redis GEO App lets you 
 click on anywhere in the U.S. to find the list of nearest cities within a given radius. 
@@ -106,7 +104,7 @@ This just parses the `US.txt` file in our Web Applications
 folder and extracts the **state** which we'll use as the key for our Redis GEO sorted set and populate 
 it with the **longitude** and **latitude** of each **city**, skipping any duplicates. The script also 
 imports the dataset for each state in separate batches using 
-[GEOADD](http://redis.io/commands/geoadd) multi argument API.
+[GEOADD](https://redis.io/commands/geoadd) multi argument API.
 
 ### Implement the FindGeoResults Service
 
@@ -129,7 +127,7 @@ That's the only DTO our App needs which returns a `List<RedisGeoResult>`. Implem
 [RedisGeoServices](https://github.com/NetCoreApps/redis-geo/blob/master/src/RedisGeo.ServiceInterface/RedisGeoServices.cs) 
 is then just a matter fulfilling the above contract by delegating our populated Request DTO properties to the
 `IRedisClient.FindGeoResultsInRadius()` Redis Client API which itself just calls 
-[GEORADIUS](http://redis.io/commands/georadius) and returns its results:
+[GEORADIUS](https://redis.io/commands/georadius) and returns its results:
 
 ```csharp
 public class RedisGeoServices : Service
@@ -159,7 +157,7 @@ which is just a jQuery App that just consists of the following markup:
 
         <div id="instructions">
             Click on Map to find nearest cities using
-            <a href="http://redis.io/commands/georadius">Redis GEO</a>
+            <a href="https://redis.io/commands/georadius">Redis GEO</a>
         </div>
 
         <div id="info">
