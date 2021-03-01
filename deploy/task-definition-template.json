@@ -32,7 +32,7 @@
         },
         {
           "name": "REDIS_HOST",
-          "value": "redis"
+          "value": "ec2-user_redis_1"
         }
       ],
       "mountPoints": [],
@@ -48,7 +48,21 @@
           "awslogs-region": "${AWS_REGION}",
           "awslogs-create-group": "true"
         }
-      }
+      },
+      "links": ["redis"]
+    },
+    {
+      "portMappings": [
+        {
+          "protocol": "tcp",
+          "containerPort": 6379
+        }
+      ],
+      "cpu": 0,
+      "memory": 32,
+      "image": "redis",
+      "essential": true,
+      "name": "redis"
     }
   ]
 }
