@@ -32,7 +32,7 @@
         },
         {
           "name": "REDIS_HOST",
-          "value": "ec2-user_redis_1"
+          "value": "redis"
         }
       ],
       "mountPoints": [],
