@@ -5,6 +5,12 @@
     <meta name="description" content="1">
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
     <style>
         html, body {
             height: 100%;
@@ -19,6 +25,9 @@
         #sidebar {
             width: 30%;
             float: right;
+        }
+        #sidebar h3 {
+            margin-bottom: 125px;
         }
         #sidebar .inner {
             padding: 0 20px;
@@ -68,73 +77,60 @@
 
 <script>
     var map;
+    console.log('foooo');
     function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: 37.09024, lng: -95.7128917 },
-            zoom: 5
-        });
-        var geocoder = new google.maps.Geocoder();
+        map = L.map('map').setView([37.09024, -95.7128917], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
         var lastMarker, lastRadius;
 
-        google.maps.event.addListener(map, "click", function (e) {
-            geocoder.geocode({ 'location': e.latLng }, function (results, status) {
-                if (status === google.maps.GeocoderStatus.OK) {
-                    map.setCenter(e.latLng);
+        map.on('click', (e) => {
+            $.getJSON("https://nominatim.openstreetmap.org/reverse?lat=" + e.latlng.lat + "&lon=" + e.latlng.lng + "&zoom=8&format=json&addressdetails=1", (data) => {
+                let pos = [e.latlng.lat, e.latlng.lng];
+                map.setView(pos);
 
-                    if (lastMarker != null)
-                        lastMarker.setMap(null);
-
-                    var marker = lastMarker = new google.maps.Marker({
-                        map: map,
-                        position: e.latLng
-                    });
-
-                    if (lastRadius != null)
-                        lastRadius.setMap(null);
-
-                    var km = parseInt($("#km").val());
-                    var radius = lastRadius = new google.maps.Circle({
-                        strokeColor: "#c3fc49",
-                        strokeOpacity: 0.8,
-                        strokeWeight: 2,
-                        fillColor: "#c3fc49",
-                        fillOpacity: 0.35,
-                        map: map,
-                        center: e.latLng,
-                        radius: km * 1000
-                    });
-                    radius.bindTo('center', marker, 'position');
-
-                    var state = getStateAbbr(results);
-                    $("#state").html(state);
-                    $("#instructions").hide();
-                    $("#info").show();
-
-                    $.getJSON("/georesults/" + state,
-                        { lat: e.latLng.lat(), lng: e.latLng.lng(), withinKm: km },
-                        function (r) {
-                            var html = $.map(r, function (x) {
-                                return "<li>" + x.member + " (" + x.distance.toFixed(2) + "km)</li>";
-                            }).join('');
-                            $("#results").html(html);
-                        });
+                if(lastMarker != null) {
+                    lastMarker.remove()
                 }
-            });
-        });
 
+                lastMarker = L.marker(pos)
+                lastMarker.addTo(map);
+
+                var km = parseInt($("#km").val());
+                if(lastRadius != null) {
+                    lastRadius.remove();
+                }
+                lastRadius = L.circle(pos, km*1000).addTo(map);
+                var state = getStateAbbr(data);
+                if(state == null)
+                {
+                    $("#state").html("No state found");
+                    return;
+                }
+                $("#state").html(state);
+                $("#instructions").hide();
+                $("#info").show();
+
+                
+                $.getJSON("/georesults/" + state,
+                    { lat: e.latlng.lat, lng: e.latlng.lng, withinKm: km },
+                    function (r) {
+                        var html = $.map(r, function (x) {
+                            return "<li>" + x.member + " (" + x.distance.toFixed(2) + "km)</li>";
+                        }).join('');
+                        $("#results").html(html);
+                    });
+            })
+        })
+        
         function getStateAbbr(results) {
-            for (var i = 0; i < results.length; i++) {
-                for (var j = 0; j < results[i].address_components.length; j++) {
-                    var addr = results[i].address_components[j];
-                    if (addr.types.indexOf("administrative_area_level_1") >= 0)
-                        return addr.short_name;
-                }
-            }
-            return null;
+            return results.address.territory != null ? results.address.territory : results.address.state;
         }
     }
+    initMap();
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDz8ab2kD1_JyffvmcBC_asZl0EG0KTOaU&callback=initMap" async defer></script>
 <script src="/js/jquery-2.2.3.min.js"></script>
 </body>
 </html>

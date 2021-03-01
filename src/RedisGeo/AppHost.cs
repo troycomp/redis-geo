@@ -58,6 +58,22 @@ namespace RedisGeo
                     results.Add(new ServiceStack.Redis.RedisGeo(longitude, latitude, city));
                 }
             }
+            
+            using (var redis = redisManager.GetClient())
+            using (var reader =
+                new StreamReader(File.OpenRead(MapProjectPath($"~/App_Data/{countryCode}_mapping.txt"))))
+            {
+                string line = null;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.Trim().Length == 0)
+                        continue;
+                    var stateInfo = line.Split("\t");
+                    if(stateInfo.Length != 2)
+                        continue;
+                    redis.Set("mapping:" + stateInfo[1].Trim(), stateInfo[0].Trim());
+                }
+            }
         }
     }
 }
