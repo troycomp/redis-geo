@@ -2,7 +2,9 @@
 
 Redis GEO is a simple example showing how to make use of [Redis 3.2.0 new GEO capabilities](http://antirez.com/news/104):
 
-![](https://raw.githubusercontent.com/ServiceStack/Assets/master/img/livedemos/redis-geo/redisgeo-screenshot.png)
+[![](https://raw.githubusercontent.com/ServiceStack/Assets/master/img/livedemos/redis-geo/redisgeo-screenshot.png)](https://redis.netcore.io)
+
+> Live Demo: https://redis.netcore.io
 
 If Redis hasn't already cemented itself as the venerable Swiss-Army-Knife component present in 
 [many high-performance server solutions](https://techstacks.io/tech/redis), the latest 3.2.0 release has made 
@@ -37,7 +39,7 @@ project template.
 ## Import Geonames dataset
 
 To populate Redis with useful GEO data we'll import the 
-[geonames.org postal data](http://download.geonames.org/export/zip/) which provides the zipcodes of all
+[geonames.org postal data](http://download.geonames.org/export/zip/) which provides the zip codes of all
 US cities as well as their useful longitude and latitude coordinates.
 
 The dataset is maintained in a tab-delimited `US.txt` text file which we do a fresh import of using the
