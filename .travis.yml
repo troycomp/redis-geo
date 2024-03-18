@@ -13,7 +13,6 @@ matrix:
       env: DOTNETCORE=8
 script:
   - chmod +x ./deploy-envs.sh
-  - chmod Jscripts/build.sh
   - chmod +x ./scripts/deploy.sh
   - cd scripts && ./build.sh
   - if [ "STRAVIS_BRANCH" == "master" ]; then ./deploy.sh;
