@@ -8,7 +8,7 @@ matrix:
     - os: linux
       dist: focal
       sudo: required
-      dotnet: 8.0.203
+      dotnet: 8.0
       mono: none
       env: DOTNETCORE=8
 script:
