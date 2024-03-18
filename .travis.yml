@@ -6,7 +6,7 @@ services:
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: focal
       sudo: required
       dotnet: 8.0.203
       mono: none
